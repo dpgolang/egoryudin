@@ -5,14 +5,14 @@ import (
 	"unicode"
 )
 
-// Удаление пробелов в строках. Replace(), TrimSpace() не дают полного удаления всех пробелов
+// Removing all spaces from the string. Replace(), TrimSpace() can't provide needed functional
 func stripSpaces(str string) string {
 	return strings.Map(func(r rune) rune {
 		if unicode.IsSpace(r) {
-			// если символ пробел, тогда убрать его
+			// if the character is a space, drop it
 			return -1
 		}
-		// иначе оставить символ в стркое
+		// else keep it in the string
 		return r
 	}, str)
 }
