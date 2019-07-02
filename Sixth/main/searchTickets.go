@@ -8,10 +8,10 @@ import (
 	"strings"
 )
 
-// Поиск Московских счастливых билетов
-func searchAllMoscow(ticketNumber int) bool {
-	var rightSum int
-	var leftSum int
+// Moscow algorithm
+func searchAllMoscow(ticketNumber uint) bool {
+	var rightSum uint
+	var leftSum uint
 	for i := 0; i < 6; i++ {
 		digit := ticketNumber % 10
 		ticketNumber /= 10
@@ -24,10 +24,10 @@ func searchAllMoscow(ticketNumber int) bool {
 	return rightSum == leftSum
 }
 
-// Поиск Питерских счастливых билетов
-func searchAllPetersburg(ticketNumber int) bool {
-	var evenSum int
-	var oddSum int
+// Petersburg algorithm
+func searchAllPetersburg(ticketNumber uint) bool {
+	var evenSum uint
+	var oddSum uint
 	for i := 0; i < 6; i++ {
 		digit := ticketNumber % 10
 		ticketNumber /= 10
@@ -40,45 +40,55 @@ func searchAllPetersburg(ticketNumber int) bool {
 	return evenSum == oddSum
 }
 
-// Поиск счастливых билетов
-func FindLuckyTickets(path string) (int, int, int) {
+// Search lucky tickets
+func FindLuckyTickets(path string) (uint, uint, uint) {
+	var (
+		rowCounter                     = 1 // .txt row counter. Actually, this variable was created in order to more informatively show where an incorrect input happened
+		totalAmountOfLuckyTickets      uint
+		moscowAmountOfLuckyTickets     uint
+		petersburgAmountOfLuckyTickets uint
+	)
 	file, err := os.Open(path)
-	rowCounter := 1                     // счётчик строк в файле. По большому счёту, создан для того чтобы информативнее показывать где был некорректный ввод
-	totalAmountOfLuckyTickets := 0      // кол-во найденных счастливых билетов
-	moscowAmountOfLuckyTickets := 0     // кол-во найденных счастилвых Московских билетов
-	petersburgAmountOfLuckyTickets := 0 // кол-во найденных счастилвых Питерскихы билетов
+
 	if err != nil {
 		fmt.Println("Unable to read file.")
 	}
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	for scanner.Scan() { // Построчное считываение файла.
+	for scanner.Scan() { // line by line .txt file reading
 		cityAndNumber := make([]string, 2)
 		row := scanner.Text()
 		cityAndNumber = strings.Split(row, "-")
-		if len(cityAndNumber) != 2 {
-			fmt.Printf("Error occurred while trying to read %d row\n"+
-				"Fill .txt file in a such way: 'Moscow - 123123'\n\n", rowCounter)
+
+		if rowError := validation.ValidateRow(cityAndNumber); rowError != nil {
+			fmt.Printf("Bad input at %d row, %s\n", rowCounter, rowError)
 			return moscowAmountOfLuckyTickets, petersburgAmountOfLuckyTickets, totalAmountOfLuckyTickets
 		}
+
+		// Removing all spaces from strings
 		for i := 0; i < len(cityAndNumber); i++ {
 			cityAndNumber[i] = stripSpaces(cityAndNumber[i])
 		}
 
-		isCityCorrect, moscowOrPetersburg := validation.ValidateCity(cityAndNumber[0])
-		isNumberChecked, ticketNumber := validation.ValidateInt(cityAndNumber[1])
+		cityError, moscowOrPetersburg := validation.ValidateCity(cityAndNumber[0])
+		if cityError != nil {
+			fmt.Printf("Bad input at %d row, %s\n", rowCounter, cityError)
+			return moscowAmountOfLuckyTickets, petersburgAmountOfLuckyTickets, totalAmountOfLuckyTickets
+		}
 
-		if isCityCorrect && isNumberChecked {
+		numberError, ticketNumber := validation.ValidateNumber(cityAndNumber[1])
+		if numberError != nil {
+			fmt.Printf("Bad input at %d row, %s\n", rowCounter, numberError)
+			return moscowAmountOfLuckyTickets, petersburgAmountOfLuckyTickets, totalAmountOfLuckyTickets
+		}
 
-			if moscowOrPetersburg && searchAllMoscow(ticketNumber) {
-				moscowAmountOfLuckyTickets++
-				totalAmountOfLuckyTickets++
-			} else if !moscowOrPetersburg && searchAllPetersburg(ticketNumber) {
-				petersburgAmountOfLuckyTickets++
-				totalAmountOfLuckyTickets++
-
-			}
+		if moscowOrPetersburg == "Moscow" && searchAllMoscow(ticketNumber) {
+			moscowAmountOfLuckyTickets++
+			totalAmountOfLuckyTickets++
+		} else if moscowOrPetersburg == "Petersburg" && searchAllPetersburg(ticketNumber) {
+			petersburgAmountOfLuckyTickets++
+			totalAmountOfLuckyTickets++
 		}
 		rowCounter++
 	}
