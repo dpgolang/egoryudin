@@ -11,7 +11,7 @@ import (
 
 var stdin = bufio.NewReader(os.Stdin)
 
-// Установка пути текстового файла, обработка возможных ошибок
+// Setting .txt path, handling possible errors
 func SetTxtPath() (bool, string) {
 	var path string
 	var scanner = bufio.NewScanner(os.Stdin)
@@ -30,7 +30,7 @@ func SetTxtPath() (bool, string) {
 	return true, path
 }
 
-// Главное меню
+// Main menu
 func main() {
 	var firstOption int
 	var path string
@@ -60,8 +60,8 @@ func main() {
 			}
 			fmt.Println()
 		case 2:
-			moscowAmountOfLuckyTickets, petersburgAmountOfLuckyTickets, totalAmountOfLuckyTickets := FindLuckyTickets(path) // Вывод найденных счастливых билетов вплоть до последней строки
-			fmt.Printf("Number of Moscow lucky tickets: %d\n", moscowAmountOfLuckyTickets)                                  // текстового файла, либо вплоть до первой ошибки ввода
+			moscowAmountOfLuckyTickets, petersburgAmountOfLuckyTickets, totalAmountOfLuckyTickets := FindLuckyTickets(path) // Output found lucky tickets up to the last line
+			fmt.Printf("Number of Moscow lucky tickets: %d\n", moscowAmountOfLuckyTickets)                                  // of .txt file or up to the first error
 			fmt.Printf("Number of Petersburg lucky tickets: %d\n", petersburgAmountOfLuckyTickets)
 			fmt.Printf("Total number of lucky tickets: %d\n", totalAmountOfLuckyTickets)
 			fmt.Println()
