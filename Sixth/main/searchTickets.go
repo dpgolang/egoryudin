@@ -71,13 +71,13 @@ func FindLuckyTickets(path string) (uint, uint, uint) {
 			cityAndNumber[i] = stripSpaces(cityAndNumber[i])
 		}
 
-		cityError, moscowOrPetersburg := validation.ValidateCity(cityAndNumber[0])
+		moscowOrPetersburg, cityError := validation.ValidateCity(cityAndNumber[0])
 		if cityError != nil {
 			fmt.Printf("Bad input at %d row, %s\n", rowCounter, cityError)
 			return moscowAmountOfLuckyTickets, petersburgAmountOfLuckyTickets, totalAmountOfLuckyTickets
 		}
 
-		numberError, ticketNumber := validation.ValidateNumber(cityAndNumber[1])
+		ticketNumber, numberError := validation.ValidateNumber(cityAndNumber[1])
 		if numberError != nil {
 			fmt.Printf("Bad input at %d row, %s\n", rowCounter, numberError)
 			return moscowAmountOfLuckyTickets, petersburgAmountOfLuckyTickets, totalAmountOfLuckyTickets
