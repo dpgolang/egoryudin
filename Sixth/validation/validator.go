@@ -5,29 +5,34 @@ import (
 	"strconv"
 )
 
-func ValidateInt(s string) (bool, int) {
+const moscowAlgorithm string = "Moscow"
+const petersburgAlgorithm string = "Petersburg"
+
+func ValidateNumber(s string) (error, uint) {
 	if len(s) == 6 {
-		number, err := strconv.Atoi(s)
+		number, err := strconv.ParseUint(s, 10, 64)
 		if err != nil {
-			fmt.Printf("'%s' is not a number\n", s)
-			return false, 0
-		} else if number <= 0 {
-			fmt.Println("You have to input non-negative numbers!")
-			return false, 0
-		} else {
-			return true, number
+			return fmt.Errorf("error occured: %s", err), 0
 		}
-	} else {
-		fmt.Printf("Ticket number '%s' must be a length of 6.\n", s)
-		return false, 0
+		return nil, uint(number)
 	}
+	return  fmt.Errorf("error occured: ticket number '%s' must be a length of 6", s), 0
 }
 
-func ValidateCity(s string) (bool, bool) { // Первое возвращаемое значение показывает, введенна ли допустимая строка, второе - алгоритм "Moscow" или "Petersburg"
-	if s == "Moscow" {
-		return true, true
-	} else if s == "Petersburg" {
-		return true, false
+// Checking whether first value of the row (city) was input correctly. Defining an algorithm
+func ValidateCity(s string) (error, string) {
+	if s == moscowAlgorithm {
+		return nil, moscowAlgorithm
+	} else if s == petersburgAlgorithm {
+		return nil, petersburgAlgorithm
 	}
-	return false, false
+	return fmt.Errorf("error occured: cannot define an algorithm '%s'", s), ""
+}
+
+// Each row of the file must consist of 2 values: name of the city (algorithm) and ticket number
+func ValidateRow(s []string) error {
+	if len(s) != 2 {
+		return fmt.Errorf("error occured: two parameters needed")
+	}
+	return nil
 }
