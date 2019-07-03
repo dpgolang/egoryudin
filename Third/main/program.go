@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Third/validation"
+	"Temp/Third/validation"
 	"bufio"
 	"fmt"
 	"os"
@@ -11,53 +11,55 @@ import (
 var stdin = bufio.NewReader(os.Stdin)
 var scanner = bufio.NewScanner(os.Stdin)
 
-// Ф-ия добавления треугольников
+// Adding new triangles
 func AddTriangle() []Triangle {
-	incorrectChecker := make(boolSlice, 4) // Слайс, элементы которого показывают, все ли значения введены корректно
-	splitValues := make([]string, 4)       // Слайс в котором хранятся имя и три стороны треугольника
-	tempFloats := make([]float64, 3)       // Слайс для временного хранения значения введённых сторон треугольника
-	var triangleSlice []Triangle           // Слайс, в котором хранятся все треугольники
-	var inputtedValue string               // Введённая строка с консоли
-	var isAnyIncorrectValue = true         // Переменная, которая отвечает за то, было ли введено хотя бы одно недопустимое значение
+	var (
+		incorrectChecker    = make(boolSlice, 4) // Slice, elements of which show whether all values are entered correctly
+		splitValues         = make([]string, 4)  // Slice which stores the name and the three sides of the triangle
+		tempFloats          = make([]float64, 3) // Slice for temporary storage of the entered values of the sides of the triangle
+		triangleSlice       []Triangle           // Slice in which all triangles are sorted
+		inputValue          string               // Input string from console
+		isAnyIncorrectValue = true               // A variable that is responsible for whether at least one invalid value was entered
+	)
 
-	// Цикл добавления новых треугольников. Длится до тех пор, пока пользователь не напишет 'n/no'
+	// The cycle of adding new triangles. Lasts until the user writes 'n/no'
 	for {
-		// Цикл ввода значений треугольника. Длится до тех пор, пока все значения не будут допустимыми
+		// The cycle for entering the values of a triangle. Lasts until all values are valid
 		for isAnyIncorrectValue {
 			fmt.Println("\nInput name and lengths of the three sides of triangle")
 			scanner.Scan()
-			inputtedValue = scanner.Text()
+			inputValue = scanner.Text()
 
-			// Разбиение строки с введёнными значениями на слайс
-			splitValues = strings.Split(inputtedValue, ",")
+			// Splitting a string with entered values into a slice
+			splitValues = strings.Split(inputValue, ",")
 			if len(splitValues) != 4 {
 				fmt.Println("You have to input 4 values!")
 				continue
 			}
-			// Удаление всех пробелов в значениях слайса
+			// Removing all spaces in slice elements
 			for i := 0; i < 4; i++ {
 				splitValues[i] = stripSpaces(splitValues[i])
 			}
-			incorrectChecker, tempFloats = validation.FinalTriangleValidator(splitValues) // Полная проверка введённых значений
-			isAnyIncorrectValue = incorrectChecker.contains()                             // Проверка было ли введено хотя бы одно недопустимое значение
-			incorrectChecker = incorrectChecker[:0]                                       // Очистка чекера введённых значений
+			tempFloats, incorrectChecker = validation.FinalTriangleValidator(splitValues) // Full validation of entered values
+			isAnyIncorrectValue = incorrectChecker.contains()                             // Check if at least one invalid value was entered
+			incorrectChecker = incorrectChecker[:0]                                       // Clearing the checker
 		}
-		triangleSlice = append(triangleSlice, Triangle{splitValues[0], tempFloats[0], tempFloats[1], tempFloats[2], 0}) // Добавление нового треугольинка
+		triangleSlice = append(triangleSlice, Triangle{splitValues[0], tempFloats[0], tempFloats[1], tempFloats[2], 0}) // Adding new triangle
 
-		if IfContinueInput() { // Если пользователь хочет продолжить, он вводит ещё один треугольник
+		if IfContinueInput() { // If the user would like to continue, he adds another triangle
 			isAnyIncorrectValue = true
 			continue
-		} else { // Если нет - высчитывается площадь всех треугольников
+		} else { // Else - the area of all triangles calculates
 			for i := 0; i < len(triangleSlice); i++ {
 				triangleSlice[i].HeronsFormula()
 			}
 			fmt.Println("Triangle/triangles has/have been successfully added!\n")
-			return triangleSlice // Возвращение в меню
+			return triangleSlice // Return to the menu
 		}
 	}
 }
 
-// Сортироровка и вывод значений треугольников
+// Sorting and output triangles
 func SortAndShowTriangles(triangles []Triangle) {
 	if len(triangles) == 0 {
 		fmt.Println("No triangles have been added\n")
@@ -81,7 +83,7 @@ func SortAndShowTriangles(triangles []Triangle) {
 	fmt.Println()
 }
 
-// Главное меню
+// Main menu
 func main() {
 	var FilledTriangleSlice []Triangle
 	var firstOption int
