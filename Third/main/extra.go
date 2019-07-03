@@ -1,13 +1,13 @@
 package main
 
 import (
-	"Third/validation"
+	"Temp/Third/validation"
 	"fmt"
 	"strings"
 	"unicode"
 )
 
-// Кастомный тип, имеющий одну ф-ию. Слайс типа bool проверяется на наличие хотя бы одного значения true.
+// A custom type that has one function. A bool slice is checked for at least one true value.
 type boolSlice []bool
 
 func (b boolSlice) contains() bool {
@@ -19,25 +19,24 @@ func (b boolSlice) contains() bool {
 	return false
 }
 
-// Поиск пробелов в строке и их удаление
+// Searching for the spaces in string and removing them
 func stripSpaces(str string) string {
 	return strings.Map(func(r rune) rune {
 		if unicode.IsSpace(r) {
-			// если символ пробел, тогда убрать его
+			// if the character is a space, drop it
 			return -1
 		}
-		// иначе оставить символ в стркое
+		// else keep it in the string
 		return r
 	}, str)
 }
 
-// Ф-ия для продолжения/выхода из ф-ий
+// Continue/exit from function
 func IfContinueInput() bool {
 	var UsersAnswer string
 	var ToContinue bool
 	for {
 		fmt.Println("\nWould you like to continue? (y,yes/n,no)")
-
 		scanner.Scan()
 		UsersAnswer = scanner.Text()
 		strings.ToLower(UsersAnswer)
