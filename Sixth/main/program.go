@@ -33,12 +33,12 @@ func SetTxtPath() (bool, string) {
 // Main menu
 func main() {
 	var firstOption int
-	var path string
+	path := flag.String("pathFlag", basepath, "path needed")	// default path
 	flag.Parse()
 	for {
 		fmt.Println("Please select an option.\n" +
 			"1. Set .txt path.\n" +
-			"2. Count the number of lucky tickets.\n" +
+			"2. Count the number of lucky tickets (use default path: main\\file.txt)\n" +
 			"3. Exit program.")
 		for {
 			_, err := fmt.Fscan(stdin, &firstOption)
@@ -51,16 +51,16 @@ func main() {
 		fmt.Println()
 		switch firstOption {
 		case 1:
-			path = ""
+			//path = ""
 			if isValid, str := SetTxtPath(); isValid {
 				fmt.Println("Path has been set.")
-				path = str
+				*path = str
 			} else {
 				fmt.Println(str)
 			}
 			fmt.Println()
 		case 2:
-			moscowAmountOfLuckyTickets, petersburgAmountOfLuckyTickets, totalAmountOfLuckyTickets := FindLuckyTickets(path) // Output found lucky tickets up to the last line
+			moscowAmountOfLuckyTickets, petersburgAmountOfLuckyTickets, totalAmountOfLuckyTickets := FindLuckyTickets(*path) // Output found lucky tickets up to the last line
 			fmt.Printf("Number of Moscow lucky tickets: %d\n", moscowAmountOfLuckyTickets)                                  // of .txt file or up to the first error
 			fmt.Printf("Number of Petersburg lucky tickets: %d\n", petersburgAmountOfLuckyTickets)
 			fmt.Printf("Total number of lucky tickets: %d\n", totalAmountOfLuckyTickets)
